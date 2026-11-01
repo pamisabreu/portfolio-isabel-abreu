@@ -35,7 +35,7 @@ function site() {
   const nav = `<nav class="nav">
     <a href="#inicio" class="nav-marca">Isabel Abreu</a>
     <div class="nav-links">
-      <a href="#sobre">Sobre</a><a href="#midia">Na mídia</a><a href="#palestras">Palestras</a><a href="#podcast">Podcast</a><a href="#conteudo">Conteúdo</a><a href="#contato">Contato</a>
+      <a href="#sobre">Sobre</a><a href="#metodo">Método</a><a href="#midia">Na mídia</a><a href="#palestras">Palestras</a><a href="#podcast">Podcast</a><a href="#conteudo">Conteúdo</a><a href="#contato">Contato</a>
     </div>
     <a class="nav-pdf" href="Portfolio-Isabel-Abreu.pdf" download>Baixar PDF</a>
   </nav>`;
@@ -66,15 +66,79 @@ function site() {
         ${P.sobre.map((t) => `<p class="texto revela">${esc(t)}</p>`).join("")}
       </div>
     </div>
-    <div class="trajetoria">
-      <h2 class="h2 revela">Trajetória</h2>
-      <ol class="tempo">${D.trajetoria
-        .map((t) => `<li class="revela"><span class="periodo">${esc(t.periodo)}</span><h3>${esc(t.cargo)}</h3><p class="local">${esc(t.empresa)}</p><p class="texto">${esc(t.texto)}</p></li>`)
-        .join("")}</ol>
-      <div class="formacao revela">
-        <div><p class="eyebrow">Formação</p><ul>${D.formacao.map((f) => `<li><strong>${esc(f.titulo)}</strong> ${esc(f.local)} · ${esc(f.periodo)}</li>`).join("")}</ul></div>
-        <div><p class="eyebrow">Cursos</p><ul>${D.cursos.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>
+  </section>`;
+
+  const arquivo = `<section class="secao arquivo" id="alem">
+    <div class="arquivo-topo">
+      <p class="selo-texto revela">Arquivo pessoal // IA</p>
+      <h2 class="h2 revela">Além dos números.</h2>
+      <p class="texto revela">Antes do currículo, um pouco de quem eu sou. Toque nos cartões para abrir.</p>
+    </div>
+    <div class="cartoes">${D.alemDosNumeros
+      .map((c, i) => `<button class="cartao-pessoal revela" aria-expanded="false">
+        <span class="cp-num">${String(i + 1).padStart(2, "0")}</span>
+        <span class="cp-rotulo">${esc(c.rotulo)}</span>
+        <span class="cp-mais" aria-hidden="true">+</span>
+        <span class="cp-corpo">${img(c.imagem)}<strong>${esc(c.titulo)}</strong><span>${esc(c.texto)}</span></span>
+      </button>`)
+      .join("")}</div>
+    <p class="arquivo-fim revela">Fim do arquivo · IA // ${String(D.alemDosNumeros.length).padStart(2, "0")} registros</p>
+  </section>`;
+
+  const pilares = `<section class="secao secao-areia" id="metodo">
+    <p class="eyebrow revela">Como eu trabalho</p>
+    <h2 class="h2 revela">Os 4 pilares do Planejamento 360°</h2>
+    <div class="pilares revela">
+      <div class="pilares-abas" role="tablist">${D.pilares
+        .map((p, i) => `<button role="tab" class="pilar${i ? "" : " ativo"}" data-i="${i}" aria-selected="${!i}">${esc(p.nome)}</button>`)
+        .join("")}</div>
+      <div class="pilares-grafico" aria-hidden="true">${D.pilares.map((p, i) => `<span style="--h:${p.nivel}" class="${i ? "" : "ativo"}"></span>`).join("")}</div>
+      <div class="pilares-texto" aria-live="polite"></div>
+    </div>
+  </section>`;
+
+  const passos = D.jornada;
+  const jornada = `<section class="jornada" id="jornada" style="--passos:${passos.length}">
+    <div class="jornada-fixa">
+      <div class="jornada-cab">
+        <p class="eyebrow">Uma breve viagem pela minha</p>
+        <h2 class="h2">Jornada<span class="ponto">.</span></h2>
       </div>
+      <div class="jornada-palco">
+        <div class="barras" aria-hidden="true">${passos.map((p, i) => `<span style="--h:${(i + 1) / passos.length}"><i>${esc(p.ano)}</i></span>`).join("")}</div>
+        <article class="jornada-cartao"><p class="j-ano"></p><h3 class="j-titulo"></h3><p class="texto j-texto"></p></article>
+      </div>
+      <p class="jornada-dica">Role para crescer ↓</p>
+    </div>
+  </section>
+  <section class="secao formacao-secao">
+    <div class="formacao revela">
+      <div><p class="eyebrow">Experiência</p><ul>${D.trajetoria.map((t) => `<li><strong>${esc(t.cargo)}</strong> ${esc(t.empresa)} · ${esc(t.periodo)}</li>`).join("")}</ul></div>
+      <div><p class="eyebrow">Formação e cursos</p><ul>${D.formacao.map((f) => `<li><strong>${esc(f.titulo)}</strong> ${esc(f.local)} · ${esc(f.periodo)}</li>`).join("")}<li>${D.cursos.map(esc).join(" · ")}</li></ul></div>
+    </div>
+  </section>`;
+
+  const calculadora = `<section class="secao calc-secao" id="calculadora">
+    <p class="fichas revela"><span>▸</span> Faça a conta <span>◂</span></p>
+    <div class="calc revela">
+      <div class="calc-cab"><h2>O preço de esperar</h2><span class="calc-tag">Simulador</span></div>
+      <div class="calc-corpo">
+        <div class="calc-campos">
+          <label>Quanto você guardaria por mês<output id="o-valor"></output><input type="range" id="c-valor" min="100" max="10000" step="100" value="1000"></label>
+          <label>Por quantos anos<output id="o-anos"></output><input type="range" id="c-anos" min="5" max="35" step="1" value="20"></label>
+          <label>E se você esperasse para começar<output id="o-espera"></output><input type="range" id="c-espera" min="1" max="10" step="1" value="5"></label>
+          <label>Rendimento ao mês<output id="o-taxa"></output><input type="range" id="c-taxa" min="0.5" max="1" step="0.05" value="0.8"></label>
+        </div>
+        <div class="calc-resultado">
+          <div class="calc-barras">
+            <div><span class="cb" id="b-hoje"></span><small>Começando hoje</small><strong id="r-hoje"></strong></div>
+            <div><span class="cb cb-espera" id="b-espera"></span><small id="l-espera"></small><strong id="r-espera"></strong></div>
+          </div>
+          <p class="calc-preco">O preço de esperar: <strong id="r-preco"></strong></p>
+          ${a(C.whatsappLink, "Quero o meu plano ↗", "botao botao-ouro")}
+        </div>
+      </div>
+      <p class="calc-nota">Simulação ilustrativa, sem considerar impostos e inflação. Não é recomendação de investimento.</p>
     </div>
   </section>`;
 
@@ -144,7 +208,7 @@ function site() {
     <p class="atualizado">Atualizado em ${dataBR(D.atualizado)}</p>
   </footer>`;
 
-  return nav + hero + sobre + midia + palestras + podcast + conteudo + contato;
+  return nav + hero + calculadora + sobre + arquivo + pilares + jornada + midia + palestras + podcast + conteudo + contato;
 }
 
 // ============================================================
@@ -357,6 +421,72 @@ document.querySelectorAll(".filtro").forEach((b) =>
   })
 );
 
+// Calculadora "O preço de esperar"
+const BRL = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 });
+const montante = (mensal, meses, taxa) => (meses <= 0 ? 0 : mensal * ((Math.pow(1 + taxa, meses) - 1) / taxa));
+const campo = (id) => document.getElementById(id);
+function calcula() {
+  const valor = +campo("c-valor").value, anos = +campo("c-anos").value, taxa = +campo("c-taxa").value / 100;
+  const espera = Math.min(+campo("c-espera").value, anos - 1);
+  const hoje = montante(valor, anos * 12, taxa), depois = montante(valor, (anos - espera) * 12, taxa);
+  campo("o-valor").textContent = BRL.format(valor);
+  campo("o-anos").textContent = `${anos} anos`;
+  campo("o-espera").textContent = `${espera} ${espera > 1 ? "anos" : "ano"}`;
+  campo("o-taxa").textContent = `${String(+campo("c-taxa").value).replace(".", ",")}%`;
+  campo("r-hoje").textContent = BRL.format(hoje);
+  campo("r-espera").textContent = BRL.format(depois);
+  campo("l-espera").textContent = `Esperando ${espera} ${espera > 1 ? "anos" : "ano"}`;
+  campo("r-preco").textContent = BRL.format(hoje - depois);
+  campo("b-hoje").style.setProperty("--h", 1);
+  campo("b-espera").style.setProperty("--h", depois / hoje);
+}
+document.querySelectorAll(".calc input").forEach((i) => i.addEventListener("input", calcula));
+calcula();
+
+// Cartões "Além dos números"
+document.querySelectorAll(".cartao-pessoal").forEach((c) =>
+  c.addEventListener("click", () => c.setAttribute("aria-expanded", c.getAttribute("aria-expanded") === "false"))
+);
+
+// Abas dos pilares
+function mostraPilar(i) {
+  const p = D.pilares[i];
+  document.querySelectorAll(".pilar").forEach((b, j) => (b.classList.toggle("ativo", j === i), b.setAttribute("aria-selected", j === i)));
+  document.querySelectorAll(".pilares-grafico span").forEach((s, j) => s.classList.toggle("ativo", j === i));
+  document.querySelector(".pilares-texto").innerHTML = `<p><b>Por que importa:</b> ${esc(p.importa)}</p><p><b>Como atuo:</b> ${esc(p.atuo)}</p>`;
+}
+document.querySelectorAll(".pilar").forEach((b) => b.addEventListener("click", () => mostraPilar(+b.dataset.i)));
+mostraPilar(0);
+
+// Jornada: o passo muda conforme a rolagem dentro da seção
+const jornadaEl = document.querySelector(".jornada");
+const barras = [...document.querySelectorAll(".barras span")];
+let passoAtual = -1;
+function atualizaJornada() {
+  const r = jornadaEl.getBoundingClientRect();
+  const progresso = Math.min(Math.max(-r.top / (r.height - innerHeight), 0), 0.999);
+  const i = Math.floor(progresso * D.jornada.length);
+  if (i === passoAtual) return;
+  passoAtual = i;
+  const p = D.jornada[i];
+  barras.forEach((b, j) => (b.classList.toggle("cheia", j <= i), b.classList.toggle("ativa", j === i)));
+  const cartao = document.querySelector(".jornada-cartao");
+  cartao.classList.remove("troca");
+  void cartao.offsetWidth;
+  cartao.classList.add("troca");
+  cartao.querySelector(".j-ano").textContent = p.ano;
+  cartao.querySelector(".j-titulo").textContent = p.titulo;
+  cartao.querySelector(".j-texto").textContent = p.texto;
+}
+
 // Menu fica sólido ao rolar
 const nav = document.querySelector(".nav");
-addEventListener("scroll", () => nav.classList.toggle("solida", scrollY > 40), { passive: true });
+addEventListener(
+  "scroll",
+  () => {
+    nav.classList.toggle("solida", scrollY > 40);
+    atualizaJornada();
+  },
+  { passive: true }
+);
+atualizaJornada();

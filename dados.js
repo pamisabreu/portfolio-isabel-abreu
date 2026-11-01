@@ -214,4 +214,32 @@ window.PORTFOLIO = {
       { titulo: "Planejar também é fé", link: IG("isabreu.co", "p", "DfCtFRMgYXW"), imagem: "imagens/ig-DfCtFRMgYXW.jpg" },
     ],
   },
+
+  // ---------- SITE: seções interativas ----------
+  // Abas "Os 4 pilares" (clique em cada uma)
+  pilares: [
+    { nome: "Fluxo de caixa", nivel: 0.55, importa: "É onde tudo começa: saber quanto entra, quanto sai e para onde vai o dinheiro.", atuo: "Organizo receitas e gastos, separo o que é da casa e o que é da empresa e crio uma rotina simples de acompanhamento." },
+    { nome: "Patrimônio", nivel: 0.8, importa: "Renda alta sem patrimônio é só um fluxo que entra e sai.", atuo: "Defino metas por idade e por objetivo e monto a estratégia para a renda virar patrimônio." },
+    { nome: "Proteção", nivel: 0.45, importa: "Ser rica é acumular. Estar protegida é saber que a família fica bem se algo acontecer.", atuo: "Avalio reserva de emergência, seguros e sucessão para que um imprevisto não desmonte o plano." },
+    { nome: "Aposentadoria", nivel: 1, importa: "Quem é PJ ou profissional liberal não tem FGTS nem aposentadoria garantida.", atuo: "Calculo quanto é preciso acumular e quanto investir por mês para chegar lá no tempo certo." },
+  ],
+
+  // Cartões "Além dos números" (abrem ao clicar)
+  alemDosNumeros: [
+    { rotulo: "Fé", titulo: "Planejar também é fé", texto: "Antes de construir, a gente senta e faz as contas. Fé e planejamento andam juntos na minha vida.", imagem: "imagens/ig-DfCtFRMgYXW.jpg" },
+    { rotulo: "Viagens", titulo: "Mala na mão, conta de câmbio na cabeça", texto: "Amo viajar e conhecer lugares novos, e sou aquela economista que faz conta de câmbio até em feirinha de fronteira.", imagem: "imagens/ig-DV0zdtBkcdz.jpg" },
+    { rotulo: "Cozinha", titulo: "Amo cozinhar", texto: "A cozinha é o meu lugar de desligar das planilhas. Receita boa também é uma questão de proporção.", imagem: "imagens/ig-DQCxpMpk6Wb.jpg" },
+    { rotulo: "Caminho", titulo: "Antes da economia", texto: "Fui técnica em biotecnologia no IFRJ, estudei engenharia elétrica na UFRJ e fiz inglês avançado na Inglaterra. Tudo isso me trouxe método.", imagem: "imagens/isabel.jpg" },
+  ],
+
+  // Jornada em barras que crescem ao rolar a página
+  jornada: [
+    { ano: "2014", titulo: "Primeiros passos na gestão", texto: "Analista administrativa na Basis Corporation: tesouraria, conciliações e cobrança." },
+    { ano: "2018", titulo: "Técnica em Biotecnologia", texto: "Formada pelo IFRJ. Daí veio o gosto por método e dados." },
+    { ano: "2021", titulo: "Gerente administrativa", texto: "Gestão financeira completa da empresa: impostos, folha, contratos e indicadores." },
+    { ano: "2022", titulo: "Inglaterra", texto: "Inglês avançado (C1) no Bayswater College." },
+    { ano: "2024", titulo: "Dados e negócios", texto: "Analista de negócios: KPIs comerciais e dashboards em Power BI." },
+    { ano: "2025", titulo: "Economista e planejadora", texto: "Formada em Ciências Econômicas. Na W1 Consultoria, mais de 100 famílias atendidas e uma equipe de 6 pessoas." },
+    { ano: "2026", titulo: "Na mídia e no palco", texto: "Planejadora na Futuro Corp (parceira XP), destaque n'O Globo, mais de 30 entrevistas e palestras." },
+  ],
 };
