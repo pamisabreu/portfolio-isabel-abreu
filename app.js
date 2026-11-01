@@ -83,7 +83,7 @@ function site() {
             }`
           : `<span class="cp-sem-foto" aria-hidden="true">${esc(c.rotulo[0])}</span>`;
         return `<article class="cartao-pessoal revela">
-        <button class="cp-topo" aria-expanded="false">
+        <button class="cp-topo${fotos.length ? " com-capa" : ""}" aria-expanded="false"${fotos.length ? ` style="--capa:url('${fotos[0]}')"` : ""}>
           <span class="cp-num">${String(i + 1).padStart(2, "0")}${fotos.length > 1 ? ` · ${fotos.length} fotos` : ""}</span>
           <span class="cp-rotulo">${esc(c.rotulo)}</span>
           <span class="cp-mais" aria-hidden="true">+</span>
