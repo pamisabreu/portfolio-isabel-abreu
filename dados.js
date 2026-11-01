@@ -216,19 +216,23 @@ window.PORTFOLIO = {
   },
 
   // ---------- SITE: seções interativas ----------
-  // Abas "Os 4 pilares" (clique em cada uma)
+  // Abas dos pilares (clique em cada uma)
   pilares: [
-    { nome: "Fluxo de caixa", nivel: 0.55, importa: "É onde tudo começa: saber quanto entra, quanto sai e para onde vai o dinheiro.", atuo: "Organizo receitas e gastos, separo o que é da casa e o que é da empresa e crio uma rotina simples de acompanhamento." },
-    { nome: "Patrimônio", nivel: 0.8, importa: "Renda alta sem patrimônio é só um fluxo que entra e sai.", atuo: "Defino metas por idade e por objetivo e monto a estratégia para a renda virar patrimônio." },
-    { nome: "Proteção", nivel: 0.45, importa: "Ser rica é acumular. Estar protegida é saber que a família fica bem se algo acontecer.", atuo: "Avalio reserva de emergência, seguros e sucessão para que um imprevisto não desmonte o plano." },
-    { nome: "Aposentadoria", nivel: 1, importa: "Quem é PJ ou profissional liberal não tem FGTS nem aposentadoria garantida.", atuo: "Calculo quanto é preciso acumular e quanto investir por mês para chegar lá no tempo certo." },
+    { nome: "Planejamento", nivel: 0.36, importa: "Sem saber para onde vai o dinheiro, nenhuma estratégia se sustenta.", atuo: "Faço o diagnóstico da vida financeira, organizo o fluxo de caixa e separo o que é da pessoa física e o que é da empresa." },
+    { nome: "Proteção", nivel: 0.52, importa: "Um imprevisto não pode desmontar anos de trabalho.", atuo: "Monto a reserva de emergência e reviso seguros e coberturas para a família ficar segura." },
+    { nome: "Acúmulo", nivel: 0.68, importa: "Renda alta sem patrimônio é só um fluxo que entra e sai.", atuo: "Defino metas por idade e por objetivo e crio a rotina de aportes para a renda virar patrimônio." },
+    { nome: "Expansão", nivel: 0.84, importa: "Patrimônio parado perde para a inflação e para o tempo.", atuo: "Organizo a carteira para o patrimônio crescer, com eficiência nos impostos e olho na aposentadoria." },
+    { nome: "Sucessão e legado", nivel: 1, importa: "O patrimônio de uma vida não pode virar briga, custo alto ou anos de inventário.", atuo: "Organizo a estrutura e a documentação para o patrimônio chegar a quem deve, do jeito certo." },
   ],
 
   // Cartões "Além dos números" (abrem ao clicar)
+  // Se a foto ainda não existir, deixe imagem: "" (o cartão mostra a inicial no lugar)
   alemDosNumeros: [
+    { rotulo: "Família", titulo: "A mais velha de 4 irmãos", texto: "Cresci cuidando, organizando e dando o exemplo. É o mesmo cuidado que levo para cada família que atendo.", imagem: "" },
+    { rotulo: "Caio", titulo: "Parceiro na vida e nos negócios", texto: "O Caio é meu companheiro e meu sócio na CAIS Consultoria. Dividimos a casa, os sonhos e os planos.", imagem: "" },
+    { rotulo: "Luna", titulo: "A Luna", texto: "Minha cachorra, companhia de todos os dias e a melhor pausa entre uma planilha e outra.", imagem: "" },
     { rotulo: "Fé", titulo: "Planejar também é fé", texto: "Antes de construir, a gente senta e faz as contas. Fé e planejamento andam juntos na minha vida.", imagem: "imagens/ig-DfCtFRMgYXW.jpg" },
     { rotulo: "Viagens", titulo: "Mala na mão, conta de câmbio na cabeça", texto: "Amo viajar e conhecer lugares novos, e sou aquela economista que faz conta de câmbio até em feirinha de fronteira.", imagem: "imagens/ig-DV0zdtBkcdz.jpg" },
-    { rotulo: "Cozinha", titulo: "Amo cozinhar", texto: "A cozinha é o meu lugar de desligar das planilhas. Receita boa também é uma questão de proporção.", imagem: "imagens/ig-DQCxpMpk6Wb.jpg" },
     { rotulo: "Caminho", titulo: "Antes da economia", texto: "Fui técnica em biotecnologia no IFRJ, estudei engenharia elétrica na UFRJ e fiz inglês avançado na Inglaterra. Tudo isso me trouxe método.", imagem: "imagens/isabel.jpg" },
   ],
 

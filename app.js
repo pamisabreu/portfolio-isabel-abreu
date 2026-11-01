@@ -79,7 +79,7 @@ function site() {
         <span class="cp-num">${String(i + 1).padStart(2, "0")}</span>
         <span class="cp-rotulo">${esc(c.rotulo)}</span>
         <span class="cp-mais" aria-hidden="true">+</span>
-        <span class="cp-corpo">${img(c.imagem)}<strong>${esc(c.titulo)}</strong><span>${esc(c.texto)}</span></span>
+        <span class="cp-corpo">${c.imagem ? img(c.imagem) : `<span class="cp-sem-foto" aria-hidden="true">${esc(c.rotulo[0])}</span>`}<strong>${esc(c.titulo)}</strong><span>${esc(c.texto)}</span></span>
       </button>`)
       .join("")}</div>
     <p class="arquivo-fim revela">Fim do arquivo · IA // ${String(D.alemDosNumeros.length).padStart(2, "0")} registros</p>
@@ -87,7 +87,7 @@ function site() {
 
   const pilares = `<section class="secao secao-areia" id="metodo">
     <p class="eyebrow revela">Como eu trabalho</p>
-    <h2 class="h2 revela">Os 4 pilares do Planejamento 360°</h2>
+    <h2 class="h2 revela">Os ${D.pilares.length} pilares do Planejamento 360°</h2>
     <div class="pilares revela">
       <div class="pilares-abas" role="tablist">${D.pilares
         .map((p, i) => `<button role="tab" class="pilar${i ? "" : " ativo"}" data-i="${i}" aria-selected="${!i}">${esc(p.nome)}</button>`)
