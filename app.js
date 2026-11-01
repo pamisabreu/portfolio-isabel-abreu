@@ -75,12 +75,22 @@ function site() {
       <p class="texto revela">Antes do currículo, um pouco de quem eu sou. Toque nos cartões para abrir.</p>
     </div>
     <div class="cartoes">${D.alemDosNumeros
-      .map((c, i) => `<button class="cartao-pessoal revela" aria-expanded="false">
-        <span class="cp-num">${String(i + 1).padStart(2, "0")}</span>
-        <span class="cp-rotulo">${esc(c.rotulo)}</span>
-        <span class="cp-mais" aria-hidden="true">+</span>
-        <span class="cp-corpo">${c.imagem ? img(c.imagem) : `<span class="cp-sem-foto" aria-hidden="true">${esc(c.rotulo[0])}</span>`}<strong>${esc(c.titulo)}</strong><span>${esc(c.texto)}</span></span>
-      </button>`)
+      .map((c, i) => {
+        const fotos = c.fotos || (c.imagem ? [c.imagem] : []);
+        const galeria = fotos.length
+          ? `<div class="cp-galeria">${fotos.map((f) => img(f)).join("")}</div>${
+              fotos.length > 1 ? `<div class="cp-pontos">${fotos.map((_, j) => `<button aria-label="Foto ${j + 1} de ${fotos.length}" class="${j ? "" : "ativo"}"></button>`).join("")}</div>` : ""
+            }`
+          : `<span class="cp-sem-foto" aria-hidden="true">${esc(c.rotulo[0])}</span>`;
+        return `<article class="cartao-pessoal revela">
+        <button class="cp-topo" aria-expanded="false">
+          <span class="cp-num">${String(i + 1).padStart(2, "0")}${fotos.length > 1 ? ` · ${fotos.length} fotos` : ""}</span>
+          <span class="cp-rotulo">${esc(c.rotulo)}</span>
+          <span class="cp-mais" aria-hidden="true">+</span>
+        </button>
+        <div class="cp-corpo"><div>${galeria}<strong>${esc(c.titulo)}</strong><p>${esc(c.texto)}</p></div></div>
+      </article>`;
+      })
       .join("")}</div>
     <p class="arquivo-fim revela">Fim do arquivo · IA // ${String(D.alemDosNumeros.length).padStart(2, "0")} registros</p>
   </section>`;
@@ -444,9 +454,23 @@ document.querySelectorAll(".calc input").forEach((i) => i.addEventListener("inpu
 calcula();
 
 // Cartões "Além dos números"
-document.querySelectorAll(".cartao-pessoal").forEach((c) =>
-  c.addEventListener("click", () => c.setAttribute("aria-expanded", c.getAttribute("aria-expanded") === "false"))
-);
+document.querySelectorAll(".cartao-pessoal").forEach((c) => {
+  const topo = c.querySelector(".cp-topo");
+  topo.addEventListener("click", () => {
+    const abre = !c.classList.contains("aberto");
+    c.classList.toggle("aberto", abre);
+    topo.setAttribute("aria-expanded", abre);
+  });
+  // Galeria: pontinhos, toque na foto avança, e deslizar no celular
+  const galeria = c.querySelector(".cp-galeria");
+  const pontos = [...c.querySelectorAll(".cp-pontos button")];
+  if (!galeria || !pontos.length) return;
+  const vai = (j) => galeria.scrollTo({ left: j * galeria.clientWidth, behavior: "smooth" });
+  const atual = () => Math.round(galeria.scrollLeft / galeria.clientWidth);
+  pontos.forEach((p, j) => p.addEventListener("click", () => vai(j)));
+  galeria.addEventListener("click", () => vai((atual() + 1) % pontos.length));
+  galeria.addEventListener("scroll", () => pontos.forEach((p, j) => p.classList.toggle("ativo", j === atual())), { passive: true });
+});
 
 // Abas dos pilares
 function mostraPilar(i) {

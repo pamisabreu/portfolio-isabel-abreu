@@ -226,11 +226,11 @@ window.PORTFOLIO = {
   ],
 
   // Cartões "Além dos números" (abrem ao clicar)
-  // Se a foto ainda não existir, deixe imagem: "" (o cartão mostra a inicial no lugar)
+  // fotos: uma ou mais imagens (vira galeria). Sem foto, deixe imagem: "" e o cartão mostra a inicial
   alemDosNumeros: [
-    { rotulo: "Família", titulo: "A mais velha de 4 irmãos", texto: "Cresci cuidando, organizando e dando o exemplo. É o mesmo cuidado que levo para cada família que atendo.", imagem: "" },
-    { rotulo: "Caio", titulo: "Parceiro na vida e nos negócios", texto: "O Caio é meu companheiro e meu sócio na CAIS Consultoria. Dividimos a casa, os sonhos e os planos.", imagem: "" },
-    { rotulo: "Luna", titulo: "A Luna", texto: "Minha cachorra, companhia de todos os dias e a melhor pausa entre uma planilha e outra.", imagem: "" },
+    { rotulo: "Família", titulo: "A mais velha de 4 irmãos", texto: "Cresci cuidando, organizando e dando o exemplo. É o mesmo cuidado que levo para cada família que atendo.", fotos: ["imagens/familia-1.jpg", "imagens/familia-2.jpg", "imagens/familia-3.jpg", "imagens/familia-4.jpg", "imagens/familia-5.jpg"] },
+    { rotulo: "Caio", titulo: "Parceiro na vida e nos negócios", texto: "O Caio é meu companheiro e meu sócio na CAIS Consultoria. Dividimos a casa, os sonhos e os planos.", fotos: ["imagens/caio-1.jpg", "imagens/caio-2.jpg"] },
+    { rotulo: "Luna", titulo: "A Luna", texto: "Minha cachorra, companhia de todos os dias e a melhor pausa entre uma planilha e outra.", fotos: ["imagens/luna-1.jpg", "imagens/luna-2.jpg"] },
     { rotulo: "Fé", titulo: "Planejar também é fé", texto: "Antes de construir, a gente senta e faz as contas. Fé e planejamento andam juntos na minha vida.", imagem: "imagens/ig-DfCtFRMgYXW.jpg" },
     { rotulo: "Viagens", titulo: "Mala na mão, conta de câmbio na cabeça", texto: "Amo viajar e conhecer lugares novos, e sou aquela economista que faz conta de câmbio até em feirinha de fronteira.", imagem: "imagens/ig-DV0zdtBkcdz.jpg" },
     { rotulo: "Caminho", titulo: "Antes da economia", texto: "Fui técnica em biotecnologia no IFRJ, estudei engenharia elétrica na UFRJ e fiz inglês avançado na Inglaterra. Tudo isso me trouxe método.", imagem: "imagens/isabel.jpg" },
