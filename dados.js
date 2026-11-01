@@ -151,9 +151,15 @@ window.PORTFOLIO = {
     ],
   },
 
+  // Fotos de palco usadas na abertura de "Palestras"
+  palco: ["imagens/palestra-2.jpg", "imagens/palestra.jpg", "imagens/palestra-3.jpg"],
+
+  // Para incluir uma palestra em escola, copie e preencha:
+  // { evento: "Nome da escola", local: "Bairro, cidade", data: "2025-05-20", publico: "Escola",
+  //   texto: "Tema e para quem foi.", link: "", imagem: "imagens/escola-x.jpg" },
   palestras: [
     {
-      evento: "Paquetá Empreendedora",
+      evento: "Paquetá Empreendedora", publico: "Empreendedores",
       local: "Hotel Lido, Ilha de Paquetá (RJ)",
       data: "2026-09-11",
       texto:
@@ -162,8 +168,8 @@ window.PORTFOLIO = {
       imagem: "imagens/ig-DdKRU_XFbrl.jpg",
     },
     {
-      evento: "Imersão Conexão Praia",
-      local: "Cabo Frio (RJ)",
+      evento: "Imersão Conexão Praia", publico: "Empreendedores",
+      local: "Malibu Palace Hotel, Cabo Frio (RJ)",
       data: "2026-09-01",
       mostrarSoAno: true,
       texto:
@@ -172,7 +178,7 @@ window.PORTFOLIO = {
       imagem: "imagens/palestra.jpg",
     },
     {
-      evento: "Evento anual W1 Consultoria",
+      evento: "Evento anual W1 Consultoria", publico: "Corporativo",
       local: "São Paulo (SP)",
       data: "2026-03-19",
       texto: "Participação no encontro anual da W1 Consultoria, onde liderou uma equipe de 6 planejadores financeiros.",
@@ -180,7 +186,7 @@ window.PORTFOLIO = {
       imagem: "imagens/ig-DWEY_pzkY_b.jpg",
     },
     {
-      evento: "Conexões Femininas Day",
+      evento: "Conexões Femininas Day", publico: "Mulheres empreendedoras",
       local: "Encontro de mulheres empreendedoras",
       data: "2026-02-10",
       texto: "Minipalestra “Como criar um planejamento financeiro para o seu negócio”, com orientações de gestão e crescimento para empreendedoras.",

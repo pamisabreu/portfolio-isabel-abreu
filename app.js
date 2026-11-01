@@ -1,9 +1,13 @@
-// Monta as páginas do portfólio a partir de dados.js.
-// Cada <section class="pagina"> vira uma folha A4 no PDF.
+// Monta o portfólio a partir de dados.js, em duas versões:
+//   #site → página de rolagem para a tela (animações, filtros, carrosséis)
+//   #pdf  → folhas A4 com composição de revista (usadas na impressão / PDF)
 
 const D = window.PORTFOLIO;
+const P = D.pessoa;
+const C = P.contato;
 const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
+// ---------- utilitários ----------
 function dataBR(iso, soAno) {
   const [a, m, d] = iso.split("-").map(Number);
   return soAno ? String(a) : `${String(d).padStart(2, "0")} ${MESES[m - 1]} ${a}`;
@@ -11,187 +15,348 @@ function dataBR(iso, soAno) {
 const recentes = (lista) => [...lista].sort((x, y) => y.data.localeCompare(x.data));
 const blocos = (lista, n) => Array.from({ length: Math.ceil(lista.length / n) }, (_, i) => lista.slice(i * n, i * n + n));
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const link = (href, inner, cls = "") =>
+const a = (href, inner, cls = "") =>
   href ? `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener">${inner}</a>` : `<span class="${cls}">${inner}</span>`;
+const img = (src, cls = "") => `<img class="${cls}" src="${src}" alt="" loading="lazy">`;
 
-function titulo(texto, sub) {
-  return `<header class="titulo"><h2>${texto}</h2>${sub ? `<p>${sub}</p>` : ""}</header>`;
-}
-function pagina(conteudo, cls = "") {
-  return `<section class="pagina ${cls}">${conteudo}<footer class="rodape"><span>${D.pessoa.nome} · Portfólio</span><span class="num"></span></footer></section>`;
+// Toda a imprensa numa lista só, com o tipo
+const IMPRENSA = recentes([
+  ...D.tv.map((m) => ({ ...m, tipo: "TV" })),
+  ...D.radio.map((m) => ({ ...m, tipo: "Rádio" })),
+  ...D.portais.map((m) => ({ ...m, tipo: "Jornal" })),
+]);
+const VEICULOS = [...new Set(IMPRENSA.map((m) => m.veiculo.split(" · ")[0]))];
+const ESCOLAS = D.palestras.filter((p) => (p.publico || "").toLowerCase().includes("escola"));
+
+// ============================================================
+// SITE
+// ============================================================
+function site() {
+  const nav = `<nav class="nav">
+    <a href="#inicio" class="nav-marca">Isabel Abreu</a>
+    <div class="nav-links">
+      <a href="#sobre">Sobre</a><a href="#midia">Na mídia</a><a href="#palestras">Palestras</a><a href="#podcast">Podcast</a><a href="#conteudo">Conteúdo</a><a href="#contato">Contato</a>
+    </div>
+    <a class="nav-pdf" href="Portfolio-Isabel-Abreu.pdf" download>Baixar PDF</a>
+  </nav>`;
+
+  const hero = `<header class="hero" id="inicio">
+    <div class="hero-texto">
+      <p class="eyebrow revela">${esc(P.titulo)}</p>
+      <h1 class="revela">Isabel<br><em>Abreu</em></h1>
+      <p class="hero-resumo revela">${esc(P.resumo)}</p>
+      <div class="hero-botoes revela">
+        ${a(C.whatsappLink, "Falar no WhatsApp", "botao")}
+        <a class="botao botao-linha" href="#midia">Ver trabalhos</a>
+      </div>
+    </div>
+    <figure class="hero-foto"><img src="imagens/capa.jpg" alt="${esc(P.nome)}"><span class="selo">Portfólio<br>${new Date(D.atualizado).getFullYear()}</span></figure>
+  </header>
+  <div class="letreiro" aria-label="Veículos"><div>${[...VEICULOS, ...VEICULOS].map((v) => `<span>${esc(v)}</span>`).join("")}</div></div>
+  <section class="numeros-faixa">${P.numeros
+    .map((n) => `<div class="revela"><strong data-conta="${esc(n.valor)}">${esc(n.valor)}</strong><span>${esc(n.rotulo)}</span></div>`)
+    .join("")}</section>`;
+
+  const sobre = `<section class="secao" id="sobre">
+    <div class="sobre">
+      <figure class="sobre-foto revela"><img src="imagens/isabel.jpg" alt=""></figure>
+      <div>
+        <p class="eyebrow revela">Quem sou</p>
+        <blockquote class="revela">“${esc(P.frase)}”</blockquote>
+        ${P.sobre.map((t) => `<p class="texto revela">${esc(t)}</p>`).join("")}
+      </div>
+    </div>
+    <div class="trajetoria">
+      <h2 class="h2 revela">Trajetória</h2>
+      <ol class="tempo">${D.trajetoria
+        .map((t) => `<li class="revela"><span class="periodo">${esc(t.periodo)}</span><h3>${esc(t.cargo)}</h3><p class="local">${esc(t.empresa)}</p><p class="texto">${esc(t.texto)}</p></li>`)
+        .join("")}</ol>
+      <div class="formacao revela">
+        <div><p class="eyebrow">Formação</p><ul>${D.formacao.map((f) => `<li><strong>${esc(f.titulo)}</strong> ${esc(f.local)} · ${esc(f.periodo)}</li>`).join("")}</ul></div>
+        <div><p class="eyebrow">Cursos</p><ul>${D.cursos.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>
+      </div>
+    </div>
+  </section>`;
+
+  const d = D.destaque;
+  const filtros = ["Todos", "TV", "Rádio", "Jornal"];
+  const midia = `<section class="secao secao-escura" id="midia">
+    <div class="midia-topo">
+      <div>
+        <p class="eyebrow revela">Na mídia</p>
+        <h2 class="h2 revela">${IMPRENSA.length} entrevistas e matérias em ${VEICULOS.length} veículos</h2>
+      </div>
+      <div class="filtros revela" role="tablist">${filtros
+        .map((f, i) => `<button class="filtro${i ? "" : " ativo"}" data-filtro="${f}">${f}<span>${f === "Todos" ? IMPRENSA.length : IMPRENSA.filter((m) => m.tipo === f).length}</span></button>`)
+        .join("")}</div>
+    </div>
+    ${a(d.link, `<img src="${d.imagem}" alt=""><div><p class="eyebrow">Destaque · ${esc(d.veiculo)} · ${dataBR(d.data)}</p><h3>${esc(d.titulo)}</h3><p class="texto">${esc(d.texto)}</p></div>`, "destaque revela")}
+    <div class="mural">${IMPRENSA.map(
+      (m) => a(m.link, `<div class="mural-img">${img(m.imagem)}<span class="tipo">${m.tipo}</span></div><p class="eyebrow">${esc(m.veiculo)}</p><h4>${esc(m.titulo)}</h4><p class="data">${dataBR(m.data)}</p>`, `peca revela" data-tipo="${m.tipo}`)
+    ).join("")}</div>
+  </section>`;
+
+  const palestras = `<section class="secao" id="palestras">
+    <p class="eyebrow revela">Palestras e eventos</p>
+    <h2 class="h2 revela">Educação financeira em palcos, eventos e salas de aula</h2>
+    <div class="palco">${D.palco.map((s) => `<figure class="revela">${img(s)}</figure>`).join("")}</div>
+    <div class="eventos">${recentes(D.palestras)
+      .map((p, i) => `<article class="evento revela ${i % 2 ? "inverte" : ""}">
+        ${a(p.link, img(p.imagem), "evento-img")}
+        <div><p class="eyebrow">${esc(p.publico || "")}${p.publico ? " · " : ""}${dataBR(p.data, p.mostrarSoAno)}</p><h3>${esc(p.evento)}</h3><p class="local">${esc(p.local)}</p><p class="texto">${esc(p.texto)}</p></div>
+      </article>`)
+      .join("")}</div>
+    <div class="temas revela"><p class="eyebrow">Temas mais pedidos</p><ul>${D.temasPalestra.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></div>
+  </section>`;
+
+  const pc = D.podcast;
+  const podcast = `<section class="secao secao-areia" id="podcast">
+    <div class="podcast">
+      <figure class="podcast-foto revela">${img(pc.imagens[0])}</figure>
+      <div>
+        <p class="eyebrow revela">Podcast</p>
+        <h2 class="h2 revela">${esc(pc.nome)}</h2>
+        <p class="texto revela">${esc(pc.texto)}</p>
+        <ol class="episodios">${recentes(pc.episodios).map((e, i) => `<li class="revela">${a(e.link, `<span class="n">${String(i + 1).padStart(2, "0")}</span><span class="t">${esc(e.titulo)}</span><span class="data">${dataBR(e.data)}</span>`)}</li>`).join("")}</ol>
+      </div>
+    </div>
+  </section>`;
+
+  const ct = D.conteudo;
+  const conteudo = `<section class="secao" id="conteudo">
+    <div class="conteudo-topo">
+      <div><p class="eyebrow revela">Conteúdo</p><h2 class="h2 revela">Dinheiro explicado de um jeito que todo mundo entende</h2></div>
+      <p class="texto revela">${esc(ct.texto)} ${a(C.instagramLink, esc(C.instagram), "link")} · ${a(C.youtubeLink, "YouTube", "link")}</p>
+    </div>
+    <div class="carrossel">${ct.exemplos.map((e) => a(e.link, `${img(e.imagem)}<span>${esc(e.titulo)}</span>`, "post")).join("")}</div>
+  </section>`;
+
+  const contato = `<footer class="contato" id="contato">
+    <p class="eyebrow revela">Contato</p>
+    <h2 class="revela">Vamos conversar?</h2>
+    <p class="contato-sub revela">Consultoria, palestras, entrevistas e parcerias.</p>
+    <div class="contato-links revela">
+      ${a(C.whatsappLink, `<small>WhatsApp</small>${esc(C.whatsapp)}`)}
+      ${a("mailto:" + C.email, `<small>E-mail</small>${esc(C.email)}`)}
+      ${a(C.instagramLink, `<small>Instagram</small>${esc(C.instagram)}`)}
+      ${a(C.youtubeLink, `<small>YouTube</small>${esc(C.youtube)}`)}
+    </div>
+    <p class="atualizado">Atualizado em ${dataBR(D.atualizado)}</p>
+  </footer>`;
+
+  return nav + hero + sobre + midia + palestras + podcast + conteudo + contato;
 }
 
-function capa() {
-  const p = D.pessoa, c = p.contato;
-  return `<section class="pagina capa">
-    <div class="capa-faixa"><span>Portfólio</span></div>
-    <div class="capa-corpo">
-      <figure class="capa-foto"><img src="imagens/capa.jpg" alt="${esc(p.nome)}"></figure>
-      <div class="capa-texto">
-        <p class="eyebrow">${esc(p.titulo)}</p>
-        <h1>${esc(p.nome)}</h1>
-        <p class="capa-resumo">${esc(p.resumo)}</p>
-        <ul class="contatos">
-          <li>${link(c.whatsappLink, `WhatsApp ${esc(c.whatsapp)}`)}</li>
-          <li>${link("mailto:" + c.email, esc(c.email))}</li>
-          <li>${link(c.instagramLink, esc(c.instagram))}</li>
+// ============================================================
+// PDF (folhas A4)
+// ============================================================
+let numPagina = 0;
+function folha(conteudo, cls = "") {
+  numPagina++;
+  return `<section class="folha ${cls}">${conteudo}<footer class="rodape"><span>${esc(P.nome)} · Portfólio</span><span>${String(numPagina).padStart(2, "0")}</span></footer></section>`;
+}
+const cab = (t, sub = "") => `<header class="cab"><h2>${t}</h2>${sub ? `<p>${sub}</p>` : ""}</header>`;
+
+function pdf() {
+  numPagina = 0;
+  const pags = [];
+
+  // 1. Capa
+  numPagina++;
+  pags.push(`<section class="folha f-capa">
+    <img class="f-capa-foto" src="imagens/capa.jpg" alt="">
+    <div class="f-capa-painel">
+      <p class="f-vertical">Portfólio</p>
+      <div class="f-capa-nome">
+        <p class="eyebrow">${esc(P.titulo)}</p>
+        <h1>Isabel<br><em>Abreu</em></h1>
+      </div>
+      <ul class="f-capa-numeros">${P.numeros.map((n) => `<li><strong>${esc(n.valor)}</strong>${esc(n.rotulo)}</li>`).join("")}</ul>
+    </div>
+  </section>`);
+
+  // 2. Quem sou
+  pags.push(folha(`
+    <blockquote class="f-citacao">“${esc(P.frase)}”</blockquote>
+    <div class="f-sobre">
+      <div class="f-arco"><img src="imagens/isabel.jpg" alt=""></div>
+      <div>
+        <p class="eyebrow">Quem sou</p>
+        ${P.sobre.map((t) => `<p class="texto">${esc(t)}</p>`).join("")}
+        <ul class="f-contatos">
+          <li>${a(C.whatsappLink, esc(C.whatsapp))}</li><li>${a("mailto:" + C.email, esc(C.email))}</li><li>${a(C.instagramLink, esc(C.instagram))}</li>
         </ul>
       </div>
     </div>
-  </section>`;
-}
+    <div class="f-areas"><span>Planejamento 360°</span><span>Patrimônio</span><span>Proteção da família</span><span>Aposentadoria</span><span>Finanças para empresas</span></div>
+  `, "f-creme"));
 
-function quemSou() {
-  const p = D.pessoa;
-  return pagina(`
-    ${titulo("Quem sou")}
-    <div class="duas-col">
-      <figure class="foto-alta"><img src="imagens/isabel.jpg" alt=""></figure>
-      <div>
-        ${p.sobre.map((t) => `<p class="texto">${esc(t)}</p>`).join("")}
-        <blockquote>“${esc(p.frase)}”</blockquote>
-      </div>
-    </div>
-    <div class="numeros">${p.numeros.map((n) => `<div><strong>${esc(n.valor)}</strong><span>${esc(n.rotulo)}</span></div>`).join("")}</div>
-  `);
-}
-
-function trajetoria() {
-  return pagina(`
-    ${titulo("Trajetória")}
-    <ol class="linha-tempo">${D.trajetoria
-      .map((t) => `<li><span class="periodo">${esc(t.periodo)}</span><div><h3>${esc(t.cargo)}</h3><p class="local">${esc(t.empresa)}</p><p class="texto">${esc(t.texto)}</p></div></li>`)
+  // 3. Trajetória
+  pags.push(folha(`
+    ${cab("Trajetória")}
+    <ol class="f-tempo">${D.trajetoria
+      .map((t) => `<li><span class="f-ponto"></span><p class="periodo">${esc(t.periodo)}</p><h3>${esc(t.cargo)}</h3><p class="local">${esc(t.empresa)}</p><p class="texto">${esc(t.texto)}</p></li>`)
       .join("")}</ol>
-    ${titulo("Formação")}
-    <div class="formacao">
-      <ul>${D.formacao.map((f) => `<li><strong>${esc(f.titulo)}</strong><span>${esc(f.local)} · ${esc(f.periodo)}</span></li>`).join("")}</ul>
-      <ul class="cursos">${D.cursos.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>
+    <div class="f-formacao">
+      <div><p class="eyebrow">Formação</p><ul>${D.formacao.map((f) => `<li><strong>${esc(f.titulo)}</strong><span>${esc(f.local)} · ${esc(f.periodo)}</span></li>`).join("")}</ul></div>
+      <div><p class="eyebrow">Cursos</p><ul class="f-cursos">${D.cursos.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>
     </div>
-  `);
-}
+  `, "f-marinho"));
 
-function destaque() {
+  // 4. Abertura da mídia
   const d = D.destaque;
-  return pagina(`
-    ${titulo("Na mídia", "Destaque")}
-    <div class="destaque">
-      ${link(d.link, `<img src="${d.imagem}" alt="">`, "destaque-img")}
-      <div>
-        <p class="eyebrow">${esc(d.veiculo)} · ${dataBR(d.data)}</p>
-        <h3 class="grande">${esc(d.titulo)}</h3>
-        <p class="texto">${esc(d.texto)}</p>
-        <p class="eyebrow mt">Também falou sobre dinheiro em</p>
-        <p class="veiculos">${veiculos().join(" · ")}</p>
-      </div>
-    </div>
-  `);
-}
+  pags.push(folha(`
+    <p class="eyebrow">Na mídia</p>
+    <h2 class="f-gigante">+${IMPRENSA.length}</h2>
+    <p class="f-gigante-sub">entrevistas e matérias em ${VEICULOS.length} veículos de TV, rádio e jornal</p>
+    <div class="f-nuvem">${VEICULOS.map((v, i) => `<span class="t${i % 4}">${esc(v)}</span>`).join("")}</div>
+    ${a(d.link, `<img src="${d.imagem}" alt=""><span class="f-recorte-leg">${esc(d.veiculo)} · ${dataBR(d.data)}<br><em>${esc(d.titulo)}</em></span>`, "f-recorte")}
+  `, "f-creme f-abre-midia"));
 
-function veiculos() {
-  const todos = [...D.tv, ...D.radio, ...D.portais].map((m) => m.veiculo.split(" · ")[0]);
-  return [...new Set(todos)];
-}
+  // 5. TV: um destaque grande + oito menores por folha
+  blocos(recentes(D.tv), 9).forEach((bl, i) => {
+    pags.push(folha(`
+      ${cab("Televisão" + (i ? " · cont." : ""), "Entrevistas e matérias")}
+      <div class="f-mosaico">${bl
+        .map((m, j) => a(m.link, `${img(m.imagem)}<span class="f-leg"><b>${esc(m.veiculo)}</b>${j === 0 ? `<i>${esc(m.titulo)}</i>` : ""}<small>${dataBR(m.data)}</small></span>`, j === 0 ? "f-peca f-grande" : "f-peca"))
+        .join("")}</div>
+    `, i % 2 ? "f-creme" : "f-marinho"));
+  });
 
-function grade(lista, nome, sub) {
-  return blocos(recentes(lista), 8)
-    .map((bloco, i) =>
-      pagina(`
-        ${titulo(nome + (i ? " (cont.)" : ""), sub)}
-        <div class="grade">${bloco
-          .map((m) => link(m.link, `<img src="${m.imagem}" alt=""><span class="eyebrow">${esc(m.veiculo)}</span><span class="cartao-titulo">${esc(m.titulo)}</span><span class="data">${dataBR(m.data)}</span>`, "cartao"))
-          .join("")}</div>
-      `)
-    )
-    .join("");
-}
-
-function podcast() {
-  const p = D.podcast;
-  return pagina(`
-    ${titulo("Podcast", p.nome)}
-    <div class="podcast-fotos">${p.imagens.map((s) => `<img src="${s}" alt="">`).join("")}</div>
-    <p class="texto">${esc(p.texto)}</p>
-    <ul class="lista-links">${recentes(p.episodios)
-      .map((e) => `<li>${link(e.link, esc(e.titulo))}<span>${dataBR(e.data)}</span></li>`)
-      .join("")}</ul>
-  `);
-}
-
-function palestras() {
-  return blocos(recentes(D.palestras), 4)
-    .map((bloco, i) =>
-      pagina(`
-        ${titulo("Palestras e eventos" + (i ? " (cont.)" : ""))}
-        <div class="palestras">${bloco
-          .map((p) => `<article>${link(p.link, `<img src="${p.imagem}" alt="">`, "palestra-img")}
-            <p class="eyebrow">${esc(p.local)} · ${dataBR(p.data, p.mostrarSoAno)}</p>
-            <h3>${esc(p.evento)}</h3><p class="texto">${esc(p.texto)}</p></article>`)
-          .join("")}</div>
-        ${i === 0 ? `<p class="temas"><span class="eyebrow">Temas mais pedidos</span> ${D.temasPalestra.map(esc).join(" · ")}</p>` : ""}
-      `)
-    )
-    .join("");
-}
-
-function conteudo() {
-  const c = D.conteudo, k = D.pessoa.contato;
-  return pagina(`
-    ${titulo("Conteúdo", `${link(k.instagramLink, esc(k.instagram))} · ${link(k.youtubeLink, "YouTube " + esc(k.youtube))}`)}
-    <p class="texto">${esc(c.texto)}</p>
-    <div class="grade grade-3">${c.exemplos
-      .map((e) => link(e.link, `<img src="${e.imagem}" alt=""><span class="cartao-titulo">${esc(e.titulo)}</span>`, "cartao"))
+  // 6. Rádio (marinho, capas em círculo) + Jornais (lista editorial)
+  pags.push(folha(`
+    ${cab("Rádio", "No ar")}
+    <div class="f-radio">${recentes(D.radio)
+      .map((m) => a(m.link, `<span class="f-disco">${img(m.imagem)}</span><b>${esc(m.veiculo)}</b><span>${esc(m.titulo)}</span><small>${dataBR(m.data)}</small>`, "f-onda"))
       .join("")}</div>
-  `);
+  `, "f-marinho"));
+
+  blocos(recentes(D.portais), 8).forEach((bl, i) => {
+    pags.push(folha(`
+      ${cab("Jornais e portais" + (i ? " · cont." : ""), "Entrevistas e matérias")}
+      <div class="f-jornal">${bl
+        .map((m) => a(m.link, `${img(m.imagem)}<div><p class="eyebrow">${esc(m.veiculo)} · ${dataBR(m.data)}</p><h3>${esc(m.titulo)}</h3></div>`, "f-noticia"))
+        .join("")}</div>
+    `, "f-creme"));
+  });
+
+  // 7. Podcast
+  const pc = D.podcast;
+  pags.push(folha(`
+    <div class="f-podcast-foto"><img src="${pc.imagens[0]}" alt=""><div><p class="eyebrow">Podcast</p><h2>${esc(pc.nome)}</h2></div></div>
+    <div class="f-podcast">
+      <p class="texto">${esc(pc.texto)}</p>
+      <ol>${recentes(pc.episodios).map((e, i) => `<li>${a(e.link, `<span class="n">${String(i + 1).padStart(2, "0")}</span>${esc(e.titulo)}`)}<small>${dataBR(e.data)}</small></li>`).join("")}</ol>
+    </div>
+  `, "f-creme f-sem-margem-topo"));
+
+  // 8. Palestras: abertura com fotos de palco + eventos em zigue-zague
+  pags.push(folha(`
+    <div class="f-palco">${D.palco.map((s) => `<img src="${s}" alt="">`).join("")}</div>
+    <div class="f-palco-texto">
+      <p class="eyebrow">Palestras e eventos</p>
+      <h2>Educação financeira<br><em>que todo mundo entende.</em></h2>
+      <p class="texto">Palestras leves e diretas, com números concretos e sem jargão, para empresas, eventos, associações e escolas.</p>
+      <ul class="f-temas">${D.temasPalestra.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+    </div>
+  `, "f-marinho f-sem-margem-topo"));
+
+  blocos(recentes(D.palestras), 4).forEach((bl, i) => {
+    pags.push(folha(`
+      ${cab("Onde já falei" + (i ? " · cont." : ""), ESCOLAS.length ? "Empresas, eventos e escolas" : "")}
+      <div class="f-eventos">${bl
+        .map((p, j) => `<article class="${j % 2 ? "inverte" : ""}">${a(p.link, img(p.imagem), "f-evento-img")}<div>
+          <p class="eyebrow">${esc(p.publico || "")}${p.publico ? " · " : ""}${dataBR(p.data, p.mostrarSoAno)}</p>
+          <h3>${esc(p.evento)}</h3><p class="local">${esc(p.local)}</p><p class="texto">${esc(p.texto)}</p></div></article>`)
+        .join("")}</div>
+    `, "f-creme"));
+  });
+
+  // 9. Conteúdo
+  const ct = D.conteudo;
+  pags.push(folha(`
+    ${cab("Conteúdo", `${a(C.instagramLink, esc(C.instagram))} · ${a(C.youtubeLink, "YouTube")}`)}
+    <p class="texto f-largo">${esc(ct.texto)}</p>
+    <div class="f-posts">${ct.exemplos.map((e, i) => a(e.link, img(e.imagem), `f-post p${i}`)).join("")}</div>
+  `, "f-creme"));
+
+  // 10. Links da mídia
+  const links = recentes([...IMPRENSA, ...pc.episodios.map((e) => ({ ...e, veiculo: pc.nome, tipo: "Podcast" }))]);
+  blocos(links, 22).forEach((bl, i) => {
+    pags.push(folha(`
+      ${cab("Links" + (i ? " · cont." : ""), "Para assistir, ouvir e ler")}
+      <ul class="f-links">${bl
+        .map((m) => `<li><span class="tipo">${m.tipo}</span><div><b>${esc(m.veiculo)}</b> ${esc(m.titulo)}<br>${a(m.link, esc(m.link.replace(/^https?:\/\/(www\.)?/, "").slice(0, 70)))}</div><small>${dataBR(m.data)}</small></li>`)
+        .join("")}</ul>
+    `, "f-creme"));
+  });
+
+  // 11. Contato
+  pags.push(`<section class="folha f-fim">
+    <img src="imagens/palestra-3.jpg" alt="">
+    <div>
+      <p class="eyebrow">Contato</p>
+      <h2>Vamos<br><em>conversar?</em></h2>
+      <ul>
+        <li>${a(C.whatsappLink, `WhatsApp ${esc(C.whatsapp)}`)}</li>
+        <li>${a("mailto:" + C.email, esc(C.email))}</li>
+        <li>${a(C.instagramLink, "Instagram " + esc(C.instagram))}</li>
+        <li>${a(C.youtubeLink, "YouTube " + esc(C.youtube))}</li>
+      </ul>
+      <p class="atualizado">Atualizado em ${dataBR(D.atualizado)}</p>
+    </div>
+  </section>`);
+
+  return pags.join("");
 }
 
-function midia() {
-  const todos = recentes([
-    ...D.tv.map((m) => ({ ...m, tipo: "TV" })),
-    ...D.radio.map((m) => ({ ...m, tipo: "Rádio" })),
-    ...D.portais.map((m) => ({ ...m, tipo: "Jornal" })),
-    ...D.podcast.episodios.map((m) => ({ ...m, veiculo: D.podcast.nome, tipo: "Podcast" })),
-  ]);
-  return blocos(todos, 18)
-    .map((bloco, i) =>
-      pagina(`
-        ${titulo("Mídia" + (i ? " (cont.)" : ""), i ? "" : "Todos os links para assistir, ouvir e ler")}
-        <ul class="midia">${bloco
-          .map((m) => `<li><span class="tipo">${m.tipo}</span><div><strong>${esc(m.veiculo)}</strong> · ${esc(m.titulo)}<br>${link(m.link, esc(m.link.replace(/^https?:\/\/(www\.)?/, "").slice(0, 80)))}</div><span class="data">${dataBR(m.data)}</span></li>`)
-          .join("")}</ul>
-      `)
-    )
-    .join("");
-}
+document.getElementById("site").innerHTML = site();
+document.getElementById("pdf").innerHTML = pdf();
 
-function contato() {
-  const c = D.pessoa.contato;
-  return `<section class="pagina final">
-    <p class="eyebrow">Contato</p>
-    <h2>${esc(D.pessoa.nome)}</h2>
-    <p class="final-sub">${esc(D.pessoa.titulo)}</p>
-    <ul>
-      <li>${link(c.whatsappLink, `WhatsApp ${esc(c.whatsapp)}`)}</li>
-      <li>${link("mailto:" + c.email, esc(c.email))}</li>
-      <li>${link(c.instagramLink, "Instagram " + esc(c.instagram))}</li>
-      <li>${link(c.youtubeLink, "YouTube " + esc(c.youtube))}</li>
-    </ul>
-    <p class="atualizado">Atualizado em ${dataBR(D.atualizado)}</p>
-  </section>`;
-}
+// ============================================================
+// Interações do site
+// ============================================================
+const semMovimento = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-document.getElementById("portfolio").innerHTML = [
-  capa(),
-  quemSou(),
-  trajetoria(),
-  destaque(),
-  grade(D.tv, "Televisão", "Entrevistas e matérias"),
-  grade(D.radio, "Rádio", "Entrevistas"),
-  grade(D.portais, "Jornais e portais", "Entrevistas e matérias"),
-  podcast(),
-  palestras(),
-  conteudo(),
-  midia(),
-  contato(),
-].join("");
+// Elementos aparecem ao rolar
+const io = new IntersectionObserver(
+  (entradas) => entradas.forEach((e) => e.isIntersecting && (e.target.classList.add("visivel"), io.unobserve(e.target))),
+  { threshold: 0.12 }
+);
+document.querySelectorAll("#site .revela").forEach((el, i) => {
+  el.style.transitionDelay = `${(i % 4) * 70}ms`;
+  semMovimento ? el.classList.add("visivel") : io.observe(el);
+});
 
-document.querySelectorAll(".pagina .num").forEach((el, i) => (el.textContent = String(i + 2).padStart(2, "0")));
+// Números contam do zero
+document.querySelectorAll("[data-conta]").forEach((el) => {
+  const alvo = parseInt(el.dataset.conta.replace(/\D/g, ""), 10);
+  const prefixo = el.dataset.conta.startsWith("+") ? "+" : "";
+  if (semMovimento || !alvo) return;
+  const obs = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    obs.disconnect();
+    const t0 = performance.now();
+    const passo = (t) => {
+      const p = Math.min((t - t0) / 1400, 1);
+      el.textContent = prefixo + Math.round(alvo * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(passo);
+    };
+    requestAnimationFrame(passo);
+  });
+  obs.observe(el);
+});
+
+// Filtros da mídia
+document.querySelectorAll(".filtro").forEach((b) =>
+  b.addEventListener("click", () => {
+    document.querySelectorAll(".filtro").forEach((x) => x.classList.toggle("ativo", x === b));
+    document.querySelectorAll(".peca").forEach((p) => {
+      p.hidden = b.dataset.filtro !== "Todos" && p.dataset.tipo !== b.dataset.filtro;
+    });
+  })
+);
+
+// Menu fica sólido ao rolar
+const nav = document.querySelector(".nav");
+addEventListener("scroll", () => nav.classList.toggle("solida", scrollY > 40), { passive: true });

@@ -1,0 +1,167 @@
+/* PDF: folhas A4 com composição de revista. Só vale na impressão. */
+:root {
+  --navy: #0f1e33; --navy-2: #182b47; --cream: #f6f1ea; --sand: #eadfd0;
+  --gold: #c9a36b; --gold-light: #e4cfa8; --terracotta: #b8775e;
+  --graphite: #3a3a3a; --warm-gray: #6d6a66; --line: #e4d9c9;
+  --serif: "Fraunces", Georgia, serif; --sans: "Manrope", system-ui, sans-serif;
+}
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+#site { display: none; }
+body { font-family: var(--sans); color: var(--graphite); }
+a { color: inherit; text-decoration: none; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+ul, ol { list-style: none; }
+
+.folha { position: relative; width: 210mm; height: 297mm; padding: 18mm 16mm 22mm; overflow: hidden; break-after: page; display: flex; flex-direction: column; }
+.folha:last-child { break-after: auto; }
+.f-creme { background: var(--cream); }
+.f-marinho { background: var(--navy); color: #d9d4cc; }
+.f-sem-margem-topo { padding-top: 0; }
+
+.eyebrow { font-size: 7.5pt; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); }
+.texto { font-size: 9.5pt; line-height: 1.6; margin-top: 3mm; }
+h3 { font-family: var(--serif); font-weight: 500; font-size: 13pt; line-height: 1.25; color: var(--navy); margin-top: 1.5mm; }
+.f-marinho h3 { color: var(--cream); }
+.local { font-size: 8.5pt; font-weight: 600; color: var(--terracotta); margin-top: 1mm; }
+.f-marinho .local { color: var(--gold-light); }
+em { font-style: italic; font-weight: 300; }
+
+.cab { display: flex; align-items: baseline; gap: 5mm; margin-bottom: 8mm; }
+.cab h2 { font-family: var(--serif); font-weight: 300; font-size: 24pt; letter-spacing: 0.2em; text-transform: uppercase; color: var(--navy); white-space: nowrap; }
+.f-marinho .cab h2 { color: var(--cream); }
+.cab::after { content: ""; flex: 1; height: 1px; background: var(--gold); order: 1; align-self: center; }
+.cab p { order: 2; font-size: 7.5pt; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--warm-gray); white-space: nowrap; }
+.f-marinho .cab p { color: var(--gold-light); }
+
+.rodape { position: absolute; left: 16mm; right: 16mm; bottom: 9mm; display: flex; justify-content: space-between; font-size: 7pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--warm-gray); border-top: 1px solid var(--line); padding-top: 3mm; }
+.f-marinho .rodape { color: rgba(228, 207, 168, 0.6); border-color: rgba(228, 207, 168, 0.2); }
+
+/* ---------- capa ---------- */
+.f-capa { padding: 0; background: var(--navy); }
+.f-capa-foto { position: absolute; inset: 0 0 0 62mm; width: auto; height: 100%; object-position: 40% 15%; }
+.f-capa-painel { position: absolute; inset: 0 auto 0 0; width: 98mm; background: linear-gradient(90deg, var(--navy) 64%, rgba(15, 30, 51, 0)); padding: 18mm 0 18mm 16mm; display: flex; flex-direction: column; }
+.f-vertical { writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--serif); font-weight: 300; font-size: 13pt; letter-spacing: 0.6em; text-transform: uppercase; color: var(--gold); }
+.f-capa-nome { margin-top: auto; }
+.f-capa h1 { font-family: var(--serif); font-weight: 500; font-size: 52pt; line-height: 0.95; color: var(--cream); margin-top: 4mm; }
+.f-capa h1 em { color: var(--gold-light); }
+.f-capa-numeros { margin-top: 14mm; display: grid; gap: 4mm; }
+.f-capa-numeros li { font-size: 7.5pt; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(246, 241, 234, 0.75); border-left: 2px solid var(--gold); padding-left: 3mm; }
+.f-capa-numeros strong { display: block; font-family: var(--serif); font-weight: 500; font-size: 20pt; letter-spacing: 0; color: var(--gold-light); }
+
+/* ---------- quem sou ---------- */
+.f-citacao { font-family: var(--serif); font-weight: 300; font-style: italic; font-size: 30pt; line-height: 1.12; color: var(--navy); margin: 4mm 0 12mm; max-width: 165mm; }
+.f-sobre { display: grid; grid-template-columns: 72mm 1fr; gap: 10mm; align-items: start; }
+.f-arco { height: 112mm; border-radius: 36mm 36mm 0 0; overflow: hidden; }
+.f-contatos { margin-top: 6mm; font-size: 8.5pt; font-weight: 700; color: var(--navy); display: grid; gap: 1.5mm; }
+.f-contatos li::before { content: "— "; color: var(--gold); }
+.f-areas { margin-top: auto; margin-bottom: 6mm; display: flex; flex-wrap: wrap; gap: 3mm; }
+.f-areas span { padding: 2.5mm 5mm; border-radius: 99px; background: var(--navy); color: var(--gold-light); font-size: 8pt; font-weight: 600; }
+
+/* ---------- trajetória ---------- */
+.f-tempo { position: relative; padding-left: 9mm; }
+.f-tempo::before { content: ""; position: absolute; left: 1.6mm; top: 2mm; bottom: 4mm; width: 1px; background: rgba(201, 163, 107, 0.5); }
+.f-tempo li { position: relative; margin-bottom: 7mm; }
+.f-ponto { position: absolute; left: -9mm; top: 1mm; width: 3.4mm; height: 3.4mm; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 1.5mm rgba(201, 163, 107, 0.2); }
+.periodo { font-size: 8pt; font-weight: 700; color: var(--gold); letter-spacing: 0.08em; }
+.f-tempo .texto { margin-top: 1.5mm; font-size: 9pt; }
+.f-formacao { margin-top: auto; margin-bottom: 6mm; display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; background: var(--navy-2); border-radius: 4mm; padding: 7mm; }
+.f-formacao li { font-size: 8.5pt; line-height: 1.4; margin-top: 2.5mm; }
+.f-formacao strong { display: block; color: var(--cream); }
+.f-formacao span { color: rgba(217, 212, 204, 0.7); font-size: 8pt; }
+.f-cursos li::before { content: "◆ "; color: var(--gold); font-size: 6pt; }
+
+/* ---------- abertura da mídia ---------- */
+.f-gigante { font-family: var(--serif); font-weight: 500; font-size: 120pt; line-height: 0.9; color: var(--navy); margin-top: 6mm; }
+.f-gigante-sub { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 16pt; color: var(--terracotta); max-width: 100mm; margin-top: 3mm; }
+.f-nuvem { margin-top: 14mm; max-width: 98mm; display: flex; flex-wrap: wrap; gap: 1mm 4mm; align-items: baseline; font-family: var(--serif); color: var(--navy); line-height: 1.3; }
+.f-nuvem .t0 { font-size: 19pt; font-weight: 500; }
+.f-nuvem .t1 { font-size: 11pt; color: var(--terracotta); font-style: italic; }
+.f-nuvem .t2 { font-size: 15pt; font-weight: 300; }
+.f-nuvem .t3 { font-size: 10pt; font-family: var(--sans); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
+.f-recorte { position: absolute; right: 12mm; top: 92mm; width: 80mm; transform: rotate(3deg); background: #fff; padding: 3mm 3mm 5mm; box-shadow: 0 6mm 14mm rgba(15, 30, 51, 0.25); }
+.f-recorte img { height: 118mm; object-fit: cover; object-position: top; }
+.f-recorte-leg { display: block; margin-top: 3mm; font-size: 7.5pt; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.f-recorte-leg em { display: block; margin-top: 1mm; font-family: var(--serif); font-size: 10pt; letter-spacing: 0; text-transform: none; color: var(--navy); font-weight: 400; }
+
+/* ---------- TV: mosaico ---------- */
+.f-mosaico { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 3.5mm; margin-bottom: 4mm; }
+.f-peca { position: relative; border-radius: 2.5mm; overflow: hidden; background: var(--sand); }
+.f-grande { grid-column: span 2; grid-row: span 2; }
+.f-peca img { position: absolute; inset: 0; object-position: center 20%; }
+.f-leg { position: absolute; left: 0; right: 0; bottom: 0; padding: 10mm 3mm 2.5mm; background: linear-gradient(transparent, rgba(11, 20, 34, 0.92)); color: var(--cream); font-size: 6.5pt; line-height: 1.3; display: flex; flex-direction: column; gap: 0.6mm; }
+.f-leg b { font-size: 6.5pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-light); }
+.f-leg i { font-family: var(--serif); font-style: normal; font-size: 12pt; line-height: 1.2; }
+.f-leg small { font-size: 6pt; opacity: 0.75; }
+.f-grande .f-leg { padding: 18mm 5mm 4mm; }
+.f-grande .f-leg b { font-size: 8pt; }
+
+/* ---------- rádio ---------- */
+.f-radio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9mm 7mm; margin-top: 4mm; }
+.f-onda { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 1.2mm; }
+.f-disco { width: 42mm; height: 42mm; border-radius: 50%; overflow: hidden; border: 1.2mm solid var(--gold); box-shadow: 0 0 0 2.5mm rgba(201, 163, 107, 0.18); margin-bottom: 3mm; }
+.f-disco img { object-position: center 18%; }
+.f-onda b { font-size: 8pt; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-light); }
+.f-onda span { font-family: var(--serif); font-size: 10pt; line-height: 1.3; color: var(--cream); }
+.f-onda small { font-size: 7pt; color: rgba(217, 212, 204, 0.6); }
+
+/* ---------- jornais ---------- */
+.f-jornal { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm 8mm; }
+.f-noticia { display: grid; grid-template-columns: 26mm 1fr; gap: 4mm; padding-bottom: 6mm; border-bottom: 1px solid var(--line); }
+.f-noticia img { height: 32mm; border-radius: 2mm; object-position: center 15%; }
+.f-noticia h3 { font-size: 11pt; }
+
+/* ---------- podcast ---------- */
+.f-podcast-foto { position: relative; height: 165mm; margin: 0 -16mm; }
+.f-podcast-foto div { position: absolute; left: 16mm; bottom: 10mm; }
+.f-podcast-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 45%, rgba(11, 20, 34, 0.85)); }
+.f-podcast-foto div { z-index: 1; }
+.f-podcast-foto h2 { font-family: var(--serif); font-weight: 500; font-size: 32pt; color: var(--cream); margin-top: 2mm; }
+.f-podcast { display: grid; grid-template-columns: 1fr 1fr; gap: 9mm; margin-top: 9mm; }
+.f-podcast li { display: flex; justify-content: space-between; gap: 4mm; padding: 3mm 0; border-bottom: 1px solid var(--line); font-size: 9pt; font-weight: 600; color: var(--navy); }
+.f-podcast .n { color: var(--gold); margin-right: 3mm; font-family: var(--serif); }
+.f-podcast small { font-weight: 400; font-size: 7.5pt; color: var(--warm-gray); white-space: nowrap; }
+
+/* ---------- palestras ---------- */
+.f-palco { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 3mm; height: 172mm; margin: 0 -16mm; }
+.f-palco img:nth-child(1) { object-position: center 25%; }
+.f-palco-texto { margin-top: 12mm; }
+.f-palco-texto h2 { font-family: var(--serif); font-weight: 500; font-size: 32pt; line-height: 1.08; color: var(--cream); margin-top: 3mm; }
+.f-palco-texto h2 em { color: var(--gold-light); }
+.f-temas { display: flex; flex-wrap: wrap; gap: 2.5mm; margin-top: 6mm; }
+.f-temas li { border: 1px solid rgba(201, 163, 107, 0.6); border-radius: 99px; padding: 2mm 4.5mm; font-size: 8pt; color: var(--gold-light); }
+
+.f-eventos { display: grid; gap: 7mm; }
+.f-eventos article { display: grid; grid-template-columns: 72mm 1fr; gap: 7mm; align-items: center; }
+.f-eventos article.inverte { grid-template-columns: 1fr 72mm; }
+.f-eventos article.inverte .f-evento-img { order: 2; }
+.f-evento-img { display: block; height: 50mm; border-radius: 3mm; overflow: hidden; }
+.f-eventos .texto { font-size: 8.8pt; }
+
+/* ---------- conteúdo ---------- */
+.f-largo { max-width: 150mm; }
+.f-posts { position: relative; flex: 1; margin-top: 6mm; }
+.f-post { position: absolute; width: 56mm; height: 70mm; border-radius: 3mm; overflow: hidden; box-shadow: 0 4mm 10mm rgba(15, 30, 51, 0.2); background: #fff; }
+.f-post.p0 { left: 0; top: 4mm; transform: rotate(-4deg); }
+.f-post.p1 { left: 61mm; top: 0; transform: rotate(2deg); }
+.f-post.p2 { left: 122mm; top: 8mm; transform: rotate(-2deg); }
+.f-post.p3 { left: 8mm; top: 92mm; transform: rotate(3deg); }
+.f-post.p4 { left: 69mm; top: 86mm; transform: rotate(-3deg); }
+.f-post.p5 { left: 120mm; top: 96mm; transform: rotate(4deg); }
+
+/* ---------- links ---------- */
+.f-links li { display: grid; grid-template-columns: 14mm 1fr 18mm; gap: 3mm; padding: 1.8mm 0; border-bottom: 1px solid var(--line); font-size: 7.5pt; line-height: 1.35; }
+.f-links b { color: var(--navy); margin-right: 1mm; }
+.f-links a { color: var(--terracotta); font-size: 6.8pt; }
+.f-links .tipo { font-size: 6pt; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); padding-top: 0.4mm; }
+.f-links small { text-align: right; color: var(--warm-gray); }
+
+/* ---------- contato ---------- */
+.f-fim { padding: 0; background: var(--navy); }
+.f-fim > img { position: absolute; inset: 0; object-position: center 30%; opacity: 0.35; }
+.f-fim > div { position: absolute; inset: auto 16mm 22mm 16mm; }
+.f-fim h2 { font-family: var(--serif); font-weight: 500; font-size: 54pt; line-height: 0.95; color: var(--cream); margin: 4mm 0 10mm; }
+.f-fim h2 em { color: var(--gold-light); }
+.f-fim li { font-size: 13pt; line-height: 2; color: var(--cream); }
+.f-fim li::before { content: "— "; color: var(--gold); }
+.f-fim .atualizado { margin-top: 10mm; font-size: 7pt; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(246, 241, 234, 0.5); }
